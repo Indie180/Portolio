@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Indiphile Tini - Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Add Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            accent: '#06b6d4',
+            muted: '#6b7280'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; scroll-behavior: smooth; }
+    .focus-ring:focus { outline: 2px solid transparent; box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.25); border-radius: .375rem; }
+    
+    /* Custom styles for the profile image */
+    .profile-container {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+    }
+    .profile-3d {
+      height: 400px;
+      width: 400px;
+      border-radius: 50%;
+      margin-right: 150px;
+      object-fit: cover;
+      margin-top: 20px;
+      border: 4px solid #06b6d4;
+      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+      transition: transform 0.3s ease;
+    }
+    .profile-3d:hover {
+      transform: scale(1.03);
+    }
+    
+    /* Animation for the profile image */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    .floating {
+      animation: float 4s ease-in-out infinite;
+    }
+    
+    /* Certificate grid improvements */
+    .certificate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .certificate-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    .certificate-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+      .certificate-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Experience section styles */
+    .experience-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .experience-card {
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .experience-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .experience-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .dark .modal-content {
+      background-color: #1e293b;
+      color: #f1f5f9;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #6b7280;
+    }
+    
+    .close-modal:hover {
+      color: #374151;
+    }
+    
+    .dark .close-modal:hover {
+      color: #d1d5db;
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased flex dark:bg-slate-900 dark:text-slate-100">
+
+  <!-- Dark/Light mode toggle button -->
+  <button id="themeToggle" aria-label="Toggle dark mode" class="fixed top-4 right-4 z-50 p-2 rounded-full bg-slate-200 text-slate-800 shadow hover:bg-accent hover:text-white transition dark:bg-slate-700 dark:text-slate-100">
+    <span id="themeIcon">🌙</span>
+  </button>
+
+  <!-- SIDEBAR -->
+  <aside class="fixed top-0 left-0 h-full w-56 bg-slate-900 text-white flex flex-col items-center py-8 space-y-8 z-50 dark:bg-slate-800 dark:text-slate-100">
+    <nav class="flex flex-col space-y-4 w-full items-center">
+      <a href="#home" class="hover:text-accent transition w-full text-center py-2 rounded focus-ring">Home</a>
+      <a href="#projects" class="hover:text-accent transition w-full text-center py-2 rounded focus-ring">Projects</a>
+      <a href="#achievement" class="hover:text-accent transition w-full text-center py-2 rounded focus-ring">Achievements</a>
+      <a href="#skills" class="hover:text-accent transition w-full text-center py-2 rounded focus-ring">Skills</a>
+      <a href="#experience" class="hover:text-accent transition w-full text-center py-2 rounded focus-ring">Experience</a>
+      <a href="#contact" class="hover:text-accent transition w-full text-center py-2 rounded focus-ring">Contact</a>
+      <a href="CERtificate/Indiphile_Tini_Resume.pdf" download class="px-4 py-2 bg-accent text-white rounded-md shadow hover:opacity-90 w-4/5 text-center">Resume</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 ml-56">
+    <!-- HERO -->
+    <section id="home" class="container mx-auto px-4 py-20 grid md:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="text-2xl font-bold">About Me</h1>
+        <h1 class="mt-3 text-4xl font-extrabold leading-tight">
+          Hi, I'm <span class="text-accent">Indiphile Tini</span> — an aspiring Software Developer.
+        </h1>
+        <p class="mt-4 text-slate-600 max-w-lg dark:text-slate-300">
+          I build clean, maintainable web apps and data visualizations. This portfolio highlights projects I've created, my skills, and my professional journey.
+        <br>
+        <br>
+        I am passionate about bridging the gap between development and operations to deliver efficient, scalable, and reliable solutions. I bring hands-on experience with HTML, CSS, and JavaScript, which strengthens my understanding of building and optimizing modern applications. With skills in version control (Git), CI/CD pipelines, cloud technologies, and containerization, I thrive on problem-solving and streamlining workflows. My passion lies in learning, innovating, and collaborating in dynamic environments. At Capacity, I aim to contribute to automation, deployment efficiency, and continuous improvement while growing into a versatile DevOps professional.
+        </p>
+      </div>
+      <!-- Updated profile image container -->
+      <div class="profile-container">
+        <img src="picture1.jpeg" alt="Indiphile Tini" class="profile-3d floating">
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="container mx-auto px-4 py-16">
+      <h2 class="text-2xl font-bold">Projects</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <!-- ...project articles... -->
+        <article class="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition dark:bg-slate-800 dark:border-slate-700">
+          <h3 class="text-lg font-semibold">AgriAI</h3>
+          <img src="certs/Screenshot2.png" alt="Project One Screenshot" class="mb-2 rounded" />
+          <p class="text-sm text-muted dark:text-slate-400">Web App • Data Visualization</p>
+          <p class="mt-2 text-sm">Dashboard with lovable and ChatGPT.</p>
+          <div class="mt-3 flex gap-3 text-sm">
+            <a href="https://fertile-ai-genesis.lovable.app/" target="_blank" class="underline">Live</a>
+          </div>
+        </article>
+        <article class="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition dark:bg-slate-800 dark:border-slate-700">
+          <h3 class="text-lg font-semibold">LinkedIn Scraper</h3>
+           <img src="certs/Screenshot 3.png" alt="Project two Screenshot" class="mb-2 rounded" />
+          <p class="text-sm text-muted dark:text-slate-400">Automation • n8n</p>
+          <p class="mt-2 text-sm">Automated scraping + sentiment analysis with n8n.</p>
+          <div class="mt-3 flex gap-3 text-sm">
+            <a href="https://asenathi.app.n8n.cloud/workflow/NjLHdwZLWhslvxHa" class="underline">Workflow</a><a href="https://teams.microsoft.com/l/message/19:5629fab0-da16-489c-8c8c-c56c5469127d_c5c0b6b3-2b12-4b89-869b-8b5b4e813f92?context=%7B%22contextType%22%3A%22chat%22%7D" class="underline">Repo</a>
+          </div>
+        </article>
+        <article class="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition dark:bg-slate-800 dark:border-slate-700">
+          <h3 class="text-lg font-semibold">Resume Builder</h3>
+         <img src="certs/screen1.png" alt="Project three Screenshot" class="mb-2 rounded" />
+          <p class="text-sm text-muted dark:text-slate-400">Resume builder • Website</p>
+          <p class="mt-2 text-sm">Responsive Resume builder site hosted on GitHub Pages.</p>
+          <div class="mt-3 flex gap-3 text-sm">
+            <a href="https://smart-resume-smith-49.lovable.app/auth" class="underline">Live</a>
+          </div>
+        </article>
+        <article class="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition dark:bg-slate-800 dark:border-slate-700">
+          <h3 class="text-lg font-semibold">Sentiment Analysis</h3>
+          <img src="certs/Screenshot 4.png" alt="Project four Screenshot" class="mb-2 rounded" />
+          <p class="text-sm text-muted dark:text-slate-400">Sentiment Analysis Dashboard• Website</p>
+          <p class="mt-2 text-sm">Sentiment Analysis Dashboard hosted on Netlify Pages.</p>
+          <div class="mt-3 flex gap-3 text-sm">
+            <a href="https://regal-gnome-67958c.netlify.app/" class="underline">Live</a>
+          </div>
+        </article>
+        <article class="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition dark:bg-slate-800 dark:border-slate-700">
+          <h3 class="text-lg font-semibold">Chatbot</h3>
+          <img src="certs/Screenshot 5.png" alt="Project Five Screenshot" class="mb-2 rounded" />
+          <p class="text-sm text-muted dark:text-slate-400">Chatbot • Website</p>
+          <p class="mt-2 text-sm">Chatbot hosted on GitHub Pages.</p>
+          <div class="mt-3 flex gap-3 text-sm">
+            <a href="https://poe.com/WILA_Chatbot" class="underline">Live</a>
+          </div>
+        </article>
+        <article class="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition dark:bg-slate-800 dark:border-slate-700">
+          <h3 class="text-lg font-semibold"> EduTools•</h3>
+           <img src="certs/Screenshot 6.png" alt="Project Six Screenshot" class="mb-2 rounded" />
+          <p class="text-sm text-muted dark:text-slate-400">EduTools• Website</p>
+          <p class="mt-2 text-sm">Responsive education site with Lovable and ChatGPT</p>
+          <div class="mt-3 flex gap-3 text-sm">
+            <a href="https://study-craft-station.lovable.app/" class="underline">Live</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  
+       <!-- ACHIEVEMENTS -->
+    <section id="achievement" class="container mx-auto px-4 py-16">
+      <h2 class="text-2xl font-bold">Achievements</h2>
+      <div class="mt-6 certificate-grid">
+        <!-- Example certificate with image and link -->
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert3.png" alt="Certificate 1" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Write Professional Emails in English</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert3.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert2.png" alt="Certificate 2" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Introduction to Artificial Intelligence (AI)</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert2.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert4.png" alt="Certificate 3" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Verbal Communications and Presentation Skills</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert4.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert5.png" alt="Certificate 4" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Generative AI</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert5.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert6.png" alt="Certificate 5" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Active Listening: Enhancing Communication Skills</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert6.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert7.png" alt="Certificate 6" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">AI Essentials</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert7.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert8.png" alt="Certificate 7" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Developing Interpersonal Skills</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert8.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert9.png" alt="Certificate 9" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Generative AI with Large Language Models</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert9.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert10.png" alt="Certificate 10" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Work Smarter, Not Harder: Time Management for Personal & Professional Productivity</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert10.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert11.png" alt="Certificate 11" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">AI Foundations: Prompt Engineering with ChatGPT</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="assets/certificates/cert11.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert12.png" alt="Certificate 12" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Emotional Intelligence</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="certs/" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert13.png" alt="Certificate 13" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Python for Data Science, AI & Development</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/13.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert14.png" alt="Certificate 14" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Finding Your Professional Voice: Confidence & Impact</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/14.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert15.png" alt="Certificate 15" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Supervised Machine Learning: Regression and Classification</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/15.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert16.png" alt="Certificate 16" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Introduction to Personal Branding</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/16.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert17.png" alt="Certificate 17" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Advanced Learning Algorithms</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="certs/picCert17.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piCert20.png" alt="Certificate 18" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Leading with Impact: Team Dynamics, Strategy and Ethics</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/20.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert19.png" alt="Certificate 19" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Advanced Learning Algorithms</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="certs/PicCert19.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert18.png" alt="Certificate 20" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Financial Planning</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/18.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picert21.png" alt="Certificate 21" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Introduction to Responsible AI</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/21.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert22.png" alt="Certificate 22" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Preparation for Job Interviews</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/22.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert25.png" alt="Certificate 23" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Trustworthy AI: Managing Bias, Ethics, and Accountability</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/23.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert24.png" alt="Certificate 24" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Psychology of the Self</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/24.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picCert25.png" alt="Certificate 25" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Cloud Computing and GCP Fundamentals</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/25.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert26.png" alt="Certificate 26" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Positive Psychology: Resilience Skills</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/26.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert27.png" alt="Certificate 27" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">GCP Computing and Storage Services</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/27.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert28.png" alt="Certificate 28" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Solving Problems with Creative and Critical Thinking</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/28.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert29.png" alt="Certificate 29" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Deployment in GCP</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/29.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert30.png" alt="Certificate 30" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Negotiation skills: Negotiate and resolve conflict</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/30.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/31.png" alt="Certificate 31" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">GCP Security and Networking</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/31.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+        
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert33.png" alt="Certificate 33" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Achieving Excellence in GCP Architecting</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/33.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+
+        <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/picccert32.png" alt="Certificate 32" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Managing Conflicts with Cultural and Emotional Intelligence</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/32.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+
+         <article class="p-4 border rounded-lg bg-white shadow-sm certificate-card dark:bg-slate-800 dark:border-slate-700">
+          <img src="certs/piccert34.png" alt="Certificate 32" class="certificate-image" />
+          <div class="flex-grow">
+            <h3 class="font-semibold">Managing Conflicts with Cultural and Emotional Intelligence</h3>
+            <p class="text-sm text-muted dark:text-slate-400">Issued by: Coursera</p>
+            <a href="CERtificate/34.pdf" download class="mt-2 inline-block px-3 py-1 bg-accent text-white rounded shadow hover:opacity-90 text-xs">Download</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="bg-gray-50 border-t py-16 dark:bg-slate-800 dark:border-slate-700">
+      <div class="container mx-auto px-4">
+        <h2 class="text-2xl font-bold">Skills</h2>
+        <div class="mt-6 grid md:grid-cols-2 gap-6">
+          <div class="p-4 border rounded bg-white shadow-sm dark:bg-slate-900 dark:border-slate-700">
+            <h3 class="font-semibold">Technical</h3>
+            <div class="mt-4 space-y-3 text-sm">
+              <p>HTML<span class="float-right text-muted dark:text-slate-400">90%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:90%"></div></div>
+              <p>CSS<span class="float-right text-muted dark:text-slate-400">90%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:90%"></div></div>
+              <p>Prompt Engineering<span class="float-right text-muted dark:text-slate-400">90%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:90%"></div></div>
+              <p>JavaScript <span class="float-right text-muted dark:text-slate-400">60%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:60%"></div></div>
+              <p>Node.js<span class="float-right text-muted dark:text-slate-400">60%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:60%"></div></div>
+              <p>React<span class="float-right text-muted dark:text-slate-400">50%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:50%"></div></div>
+              <p>Cloud Computing<span class="float-right text-muted dark:text-slate-400">50%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:50%"></div></div>
+              <p>Cloud Security<span class="float-right text-muted dark:text-slate-400">50%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:50%"></div></div>
+            </div>
+          </div>
+          <div class="p-4 border rounded bg-white shadow-sm dark:bg-slate-900 dark:border-slate-700">
+            <h3 class="font-semibold">Soft Skills</h3>
+            <ul class="mt-4 text-sm text-slate-600 dark:text-slate-300 space-y-2">
+            <p>Problem-solving<span class="float-right text-muted dark:text-slate-400">80%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:80%"></div></div>
+            <p>Teamwork<span class="float-right text-muted dark:text-slate-400">70%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:70%"></div></div>
+            <p>Time Management<span class="float-right text-muted dark:text-slate-400">65%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:65%"></div></div>
+            <p>Communication <span class="float-right text-muted dark:text-slate-400">70%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:70%"></div></div>
+            <p>Growth Mindset<span class="float-right text-muted dark:text-slate-400">90%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:90%"></div></div>
+            <p>Adaptability <span class="float-right text-muted dark:text-slate-400">80%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:80%"></div></div>
+            <p>Conflict Resolution<span class="float-right text-muted dark:text-slate-400">70%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:70%"></div></div>
+            <p>Critical thinking<span class="float-right text-muted dark:text-slate-400">85%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:85%"></div></div>
+            <p>Emotional intelligence<span class="float-right text-muted dark:text-slate-400">90%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:90%"></div></div>
+            <p>Scalability<span class="float-right text-muted dark:text-slate-400">60%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:60%"></div></div>
+            <p>Performance Tuning<span class="float-right text-muted dark:text-slate-400">60%</span></p><div class="h-2 bg-gray-200 rounded dark:bg-slate-700"><div class="h-2 bg-accent rounded" style="width:60%"></div></div>
+
+        </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+     <!-- EXPERIENCE SECTION -->
+    <section id="experience" class="container mx-auto px-4 py-16">
+      <h2 class="text-2xl font-bold">Experience</h2>
+      <div class="mt-6 experience-grid">
+        <!-- Experience Item 1 -->
+        <div class="experience-card p-4 border rounded-lg bg-white shadow-sm dark:bg-slate-800 dark:border-slate-700" data-modal="experience1">
+          <img src="certs/capaciti.png" alt="Capaciti Logo" class="experience-image mb-4">
+          <h3 class="text-lg font-semibold">Capaciti</h3>
+          <p class="text-sm text-muted dark:text-slate-400">Software Development Intern</p>
+          <p class="mt-2 text-sm">Click to learn more about my experience</p>
+        </div>
+
+        <!-- Experience Item 2 -->
+        <div class="experience-card p-4 border rounded-lg bg-white shadow-sm dark:bg-slate-800 dark:border-slate-700" data-modal="experience3">
+          <img src="certs/code.t" alt="Previous Company Logo" class="experience-image mb-4">
+          <h3 class="text-lg font-semibold">CodeTelligence Academy</h3>
+          <p class="text-sm text-muted dark:text-slate-400">Role/Position</p>
+          <p class="mt-2 text-sm">Click to learn more about my previous work</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="container mx-auto px-4 py-16">
+      <h2 class="text-2xl font-bold">Contact</h2>
+      <div class="mt-6 grid md:grid-cols-2 gap-8">
+        <div class="p-4 border rounded bg-white shadow-sm flex flex-col justify-center dark:bg-slate-900 dark:border-slate-700">
+          <p class="text-lg font-semibold mb-2">Indiphile Tini</p>
+          
+          <!-- Contact info with icons -->
+          <div class="flex items-center mb-2">
+            <i class="fas fa-envelope text-accent mr-2 w-5"></i>
+            <a href="mailto:indiphile.tini@capaciti.org.za" class="text-slate-600 hover:text-accent transition dark:text-slate-300">indiphile.tini@capaciti.org.za</a>
+          </div>
+          
+          <div class="flex items-center mb-2">
+            <i class="fas fa-phone text-accent mr-2 w-5"></i>
+            <a href="tel:+27685610804" class="text-slate-600 hover:text-accent transition dark:text-slate-300">+27 68 561 0804</a>
+          </div>
+          
+          <div class="flex items-center mb-2">
+            <i class="fas fa-map-marker-alt text-accent mr-2 w-5"></i>
+            <span class="text-slate-600 dark:text-slate-300">Cape Town, South Africa</span>
+          </div>
+          
+          <div class="flex items-center mb-2">
+            <i class="fab fa-linkedin text-accent mr-2 w-5"></i>
+            <a href="https://www.linkedin.com/in/indiphile-tini-a53017379" target="_blank" class="text-slate-600 hover:text-accent transition dark:text-slate-300">LinkedIn Profile</a>
+          </div>
+          
+          <!-- Social media icons -->
+          <div class="flex mt-4 space-x-4">
+            <a href="mailto:indiphile.tini@capaciti.org.za" class="p-2 bg-slate-100 rounded-full hover:bg-accent hover:text-white transition dark:bg-slate-700">
+              <i class="fas fa-envelope"></i>
+            </a>
+            <a href="tel:+27685610804" class="p-2 bg-slate-100 rounded-full hover:bg-accent hover:text-white transition dark:bg-slate-700">
+              <i class="fas fa-phone"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/indiphile-tini-a53017379" target="_blank" class="p-2 bg-slate-100 rounded-full hover:bg-accent hover:text-white transition dark:bg-slate-700">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <form
+  class="p-4 border rounded bg-white shadow-sm flex flex-col gap-4 dark:bg-slate-900 dark:border-slate-700"
+  action="https://formspree.io/f/xqadyrnv"
+  method="POST"
+>
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200">Your Name</span>
+<input type="text" name="name" required class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-accent focus:ring focus:ring-accent focus:ring-opacity-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100" />
+</label>
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200">Your Email</span>
+<input type="email" name="email" required class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-accent focus:ring focus:ring-accent focus:ring-opacity-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100" />
+</label>
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200">Message</span>
+<textarea name="message" rows="4" required class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-accent focus:ring focus:ring-accent focus:ring-opacity-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100"></textarea>
+</label>
+<button type="submit" class="mt-2 px-4 py-2 bg-accent text-white rounded shadow hover:opacity-90">Send Message</button>
+</form>
+</div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-6 dark:bg-slate-800 dark:text-slate-300">
+      <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-sm">&copy; <span id="year"></span></p>
+        <div class="flex gap-4 mt-3 md:mt-0">
+          <a href="https://www.linkedin.com/in/indiphile-tini-a53017379" class="hover:text-white">LinkedIn</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Experience Modals -->
+  <div id="experience1" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 class="text-2xl font-bold mb-4">Capaciti - Software Development Intern</h2>
+      <img src="certs/capaciti.png" alt="Capaciti Logo" class="w-full h-48 object-cover rounded mb-4">
+      <p class="mb-4"><strong>Duration:</strong> April 2025 - Present</p>
+      <p class="mb-4"><strong>Role:</strong> Software Development Intern</p>
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-2">Responsibilities:</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Developed and maintained web applications using modern technologies</li>
+          <li>Collaborated with cross-functional teams to deliver high-quality software solutions</li>
+          <li>Participated in code reviews and agile development processes</li>
+          <li>Implemented responsive designs and ensured cross-browser compatibility</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold mb-2">Key Achievements:</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Successfully delivered multiple projects on time and within scope</li>
+          <li>Improved application performance by optimizing code and database queries</li>
+          <li>Received positive feedback from team members and stakeholders</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="experience3" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 class="text-2xl font-bold mb-4">Code Telligence Academy</h2>
+      <img src="certs/code.t" alt="Previous Company Logo" class="w-full h-48 object-cover rounded mb-4">
+      <p class="mb-4"><strong>Duration:</strong> April 2024 - Present</p>
+      <p class="mb-4"><strong>Role:</strong> Junior Developer</p>
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-2">Responsibilities:</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Assisted in the development of web applications and APIs</li>
+          <li>Collaborated with senior developers on complex projects</li>
+          <li>Participated in daily stand-ups and sprint planning meetings</li>
+          <li>Wrote unit tests and contributed to code documentation</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold mb-2">Skills Gained:</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Enhanced proficiency in HTML and CSS</li>
+          <li>Improved understanding of agile development methodologies</li>
+          <li>Developed problem-solving and debugging skills</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dark/Light mode toggle logic
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const htmlEl = document.documentElement;
+
+    function setTheme(mode) {
+      if (mode === 'dark') {
+        htmlEl.classList.add('dark');
+        themeIcon.textContent = '☀️';
+      } else {
+        htmlEl.classList.remove('dark');
+        themeIcon.textContent = '🌙';
+      }
+      localStorage.setItem('theme', mode);
+    }
+
+    // On load: set theme from localStorage or system preference
+    (function () {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        setTheme('dark');
+      } else {
+        setTheme('light');
+      }
+    })();
+
+    themeToggle.addEventListener('click', () => {
+      setTheme(htmlEl.classList.contains('dark') ? 'light' : 'dark');
+    });
+
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Experience Modal Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all experience cards
+      const experienceCards = document.querySelectorAll('.experience-card');
+      
+      // Get all modals
+      const modals = document.querySelectorAll('.modal');
+      
+      // Get all close buttons
+      const closeButtons = document.querySelectorAll('.close-modal');
+      
+      // Add click event to each experience card
+      experienceCards.forEach(card => {
+        card.addEventListener('click', function() {
+          const modalId = this.getAttribute('data-modal');
+          const modal = document.getElementById(modalId);
+          if (modal) {
+            modal.style.display = 'flex';
+          }
+        });
+      });
+      
+      // Add click event to close buttons
+      closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const modal = this.closest('.modal');
+          if (modal) {
+            modal.style.display = 'none';
+          }
+        });
+      });
+      
+      // Close modal when clicking outside of it
+      modals.forEach(modal => {
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            this.style.display = 'none';
+          }
+        });
+      });
+      
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          modals.forEach(modal => {
+            modal.style.display = 'none';
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
